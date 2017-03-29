@@ -2,12 +2,14 @@ package com.mapbox.services.api.directionsmatrix.v1.models;
 
 import com.mapbox.services.api.directions.v5.models.DirectionsWaypoint;
 
+import java.util.List;
+
 public class DirectionsMatrixResponse {
 
   private String code;
   private double[][] durations;
-  private DirectionsWaypoint destinations;
-  private DirectionsWaypoint sources;
+  private List<DirectionsWaypoint> destinations;
+  private List<DirectionsWaypoint> sources;
 
   public DirectionsMatrixResponse() {
   }
@@ -35,19 +37,19 @@ public class DirectionsMatrixResponse {
     this.durations = durations;
   }
 
-  public DirectionsWaypoint getDestinations() {
+  public List<DirectionsWaypoint> getDestinations() {
     return destinations;
   }
 
-  public void setDestinations(DirectionsWaypoint destinations) {
+  public void setDestinations(List<DirectionsWaypoint> destinations) {
     this.destinations = destinations;
   }
 
-  public DirectionsWaypoint getSources() {
+  public List<DirectionsWaypoint> getSources() {
     return sources;
   }
 
-  public void setSources(DirectionsWaypoint sources) {
+  public void setSources(List<DirectionsWaypoint> sources) {
     this.sources = sources;
   }
 

@@ -65,6 +65,15 @@ dex-count:
 	cd mapbox; ./gradlew countDebugDexMethods
 	cd mapbox; ./gradlew countReleaseDexMethods
 
+directions-matrix-fixtures:
+	# request a symmetric 3x3 matrix for cars
+	curl "https://api.mapbox.com/directions-matrix/v1/mapbox/driving/-122.42,37.78;-122.45,37.91;-122.48,37.73?access_token=$(MAPBOX_ACCESS_TOKEN)" \
+		-o mapbox/libjava-services/src/test/fixtures/directions_matrix_3x3.json
+
+	# request an asymmetric 2x3 matrix for bicycles
+	curl "https://api.mapbox.com/directions-matrix/v1/mapbox/cycling/-122.42,37.78;-122.45,37.91;-122.48,37.73?sources=0;2&destinations=all&access_token=$(MAPBOX_ACCESS_TOKEN)" \
+		-o mapbox/libjava-services/src/test/fixtures/directions_matrix_2x3.json.json
+
 geocoding-fixtures:
 	# Geocoding: 1600 Pennsylvania Ave NW
 	curl "https://api.mapbox.com/geocoding/v5/mapbox.places/1600+pennsylvania+ave+nw.json?access_token=$(MAPBOX_ACCESS_TOKEN)" \
