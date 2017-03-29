@@ -44,6 +44,7 @@ public class MapboxDirectionsTest {
   public static final String DIRECTIONS_V5_PRECISION6_FIXTURE = "src/test/fixtures/directions_v5_precision_6.json";
   public static final String DIRECTIONS_TRAFFIC_FIXTURE = "src/test/fixtures/directions_v5_traffic.json";
   public static final String DIRECTIONS_ROTARY_FIXTURE = "src/test/fixtures/directions_v5_fixtures_rotary.json";
+  public static final String DIRECTIONS_V5_ANNOTATIONS_FIXTURE = "src/test/fixtures/directions_v5_annotations.json";
   private static final double DELTA = 1E-10;
 
   private MockWebServer server;
@@ -70,6 +71,9 @@ public class MapboxDirectionsTest {
         }
         if (request.getPath().contains("-77.04430")) {
           resource = DIRECTIONS_ROTARY_FIXTURE;
+        }
+        if (request.getPath().contains("annotations")) {
+          resource = DIRECTIONS_V5_ANNOTATIONS_FIXTURE;
         }
 
         try {
@@ -108,11 +112,11 @@ public class MapboxDirectionsTest {
   @Test
   public void callFactoryNonNull() throws ServicesException, IOException {
     MapboxDirections client = new MapboxDirections.Builder()
-            .setAccessToken("pk.XXX")
-            .setCoordinates(positions)
-            .setProfile(DirectionsCriteria.PROFILE_DRIVING)
-            .setBaseUrl(mockUrl.toString())
-            .build();
+      .setAccessToken("pk.XXX")
+      .setCoordinates(positions)
+      .setProfile(DirectionsCriteria.PROFILE_DRIVING)
+      .setBaseUrl(mockUrl.toString())
+      .build();
 
     // Setting a null call factory doesn't make the request fail
     // (the default OkHttp client is used)
@@ -172,6 +176,18 @@ public class MapboxDirectionsTest {
     thrown.expect(ServicesException.class);
     thrown.expectMessage(startsWith("You should provide at least two coordinates (from/to)"));
     new MapboxDirections.Builder().setAccessToken("pk.XXX").setProfile(DirectionsCriteria.PROFILE_DRIVING).build();
+  }
+
+  @Test
+  public void noneConstantAnnotationValue() throws ServicesException {
+    thrown.expect(ServicesException.class);
+    thrown.expectMessage(startsWith("Annotation value must be one of the constants found inside the"));
+    new MapboxDirections.Builder()
+      .setAccessToken("pk.XXX")
+      .setProfile(DirectionsCriteria.PROFILE_DRIVING)
+      .setCoordinates(positions)
+      .setAnnotation("test")
+      .build();
   }
 
   @Test
@@ -239,6 +255,25 @@ public class MapboxDirectionsTest {
       .setProfile(DirectionsCriteria.PROFILE_DRIVING)
       .setBaseUrl(mockUrl.toString())
       .build();
+  }
+
+  @Test
+  public void testAnnotations() throws ServicesException, IOException {
+    MapboxDirections.Builder builder = new MapboxDirections.Builder()
+      .setAccessToken("pk.XXX")
+      .setCoordinates(positions)
+      .setProfile(DirectionsCriteria.PROFILE_DRIVING)
+      .setBaseUrl(mockUrl.toString())
+      .setAnnotation(DirectionsCriteria.ANNOTATION_DURATION);
+
+    assertTrue(builder.setAnnotation(DirectionsCriteria.ANNOTATION_DURATION).build()
+      .executeCall().raw().request().url().toString().contains("annotations=duration"));
+    assertTrue(builder.setAnnotation(DirectionsCriteria.ANNOTATION_DISTANCE).build()
+      .executeCall().raw().request().url().toString().contains("annotations=distance"));
+    assertTrue(builder.setAnnotation(DirectionsCriteria.ANNOTATION_SPEED).build()
+      .executeCall().raw().request().url().toString().contains("annotations=speed"));
+    assertTrue(builder.setAnnotation(DirectionsCriteria.ANNOTATION_DURATION, DirectionsCriteria.ANNOTATION_SPEED)
+      .build().executeCall().raw().request().url().toString().contains("annotations=duration,speed"));
   }
 
   @Test
