@@ -56,7 +56,9 @@ public class MapboxDirectionsMatrixTest extends BaseTest {
       @Override
       public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
         try {
-          String body = new String(Files.readAllBytes(Paths.get(DIRECTIONS_MATRIX_3X3_FIXTURE)), Charset.forName("utf-8"));
+          String body = new String(
+            Files.readAllBytes(Paths.get(DIRECTIONS_MATRIX_3X3_FIXTURE)), Charset.forName("utf-8")
+          );
           return new MockResponse().setBody(body);
         } catch (IOException ioException) {
           throw new RuntimeException(ioException);
@@ -68,8 +70,8 @@ public class MapboxDirectionsMatrixTest extends BaseTest {
 
     positions = new ArrayList<>();
     positions.add(Position.fromCoordinates(-122.42, 37.78));
-    positions.add(Position.fromCoordinates(-122.45,37.91));
-    positions.add(Position.fromCoordinates(-122.48,37.73));
+    positions.add(Position.fromCoordinates(-122.45, 37.91));
+    positions.add(Position.fromCoordinates(-122.48, 37.73));
   }
 
   @After
