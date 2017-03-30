@@ -1,5 +1,6 @@
 package com.mapbox.services.api.directionsmatrix.v1;
 
+import com.mapbox.services.api.BaseTest;
 import com.mapbox.services.api.ServicesException;
 import com.mapbox.services.api.directions.v5.DirectionsCriteria;
 import com.mapbox.services.api.directionsmatrix.v1.models.DirectionsMatrixResponse;
@@ -30,10 +31,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class MapboxDirectionsMatrixTest {
+public class MapboxDirectionsMatrixTest extends BaseTest {
 
-  private static final String DIRECTIONS_MATRIX_3X3_FIXTURE = "libjava-services/src/test/fixtures/directions_matrix_3x3.json";
-  private static final String DIRECTIONS_MATRIX_2x3_FIXTURE = "libjava-services/src/test/fixtures/directions_matrix_2x3.json";
+  private static final String DIRECTIONS_MATRIX_3X3_FIXTURE
+    = "libjava-services/src/test/fixtures/directions_matrix_3x3.json";
+  private static final String DIRECTIONS_MATRIX_2x3_FIXTURE
+    = "libjava-services/src/test/fixtures/directions_matrix_2x3.json";
   private static final String ACCESS_TOKEN = "pk.XXX";
 
   private MockWebServer server;
@@ -112,6 +115,17 @@ public class MapboxDirectionsMatrixTest {
   }
 
   @Test
+  public void validProfile() throws ServicesException {
+    thrown.expect(ServicesException.class);
+    thrown.expectMessage(startsWith("Profile must be one of the constants found inside the DirectionsCriteria file."));
+    new MapboxDirectionsMatrix.Builder()
+      .setAccessToken(ACCESS_TOKEN)
+      .setCoordinates(positions)
+      .setProfile("NOT_VALID_PROFILE")
+      .build();
+  }
+
+  @Test
   public void validCoordinates() throws ServicesException {
     thrown.expect(ServicesException.class);
     thrown.expectMessage(startsWith("You should provide at least two coordinates (from/to)."));
@@ -151,8 +165,21 @@ public class MapboxDirectionsMatrixTest {
     assertTrue(service.executeCall().raw().request().header("User-Agent").contains("APP"));
   }
 
+  @Test
+  public void testResponse() throws ServicesException, IOException {
+    MapboxDirectionsMatrix client = new MapboxDirectionsMatrix.Builder()
+      .setClientAppName("APP")
+      .setAccessToken("pk.XXX")
+      .setProfile(DirectionsCriteria.PROFILE_DRIVING)
+      .setCoordinates(positions)
+      .setBaseUrl(mockUrl.toString())
+      .build();
+    Response<DirectionsMatrixResponse> response = client.executeCall();
 
-
-
-
+    assertEquals(response.body().getSources().size(), 3);
+    assertEquals(response.body().getSources().get(0).getLocation()[0], -122.420019, DELTA);
+    assertEquals(response.body().getDestinations().get(0).getLocation()[0], -122.420019, DELTA);
+    assertEquals(response.body().getDurations()[0][1], 1888.3, DELTA);
+    assertEquals(response.body().getDestinations().get(0).getName(), "McAllister Street");
+  }
 }

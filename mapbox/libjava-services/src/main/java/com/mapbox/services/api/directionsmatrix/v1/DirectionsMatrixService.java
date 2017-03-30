@@ -8,7 +8,11 @@ import retrofit2.http.Header;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-
+/**
+ * Interface that defines the directions matrix service (v1).
+ *
+ * @since 2.1.0
+ */
 public interface DirectionsMatrixService {
 
   /**
