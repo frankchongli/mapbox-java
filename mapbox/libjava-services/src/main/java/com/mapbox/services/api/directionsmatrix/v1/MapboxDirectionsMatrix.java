@@ -31,6 +31,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * The standard limit for request are a maximum 60 requests per minute and maximum 25 input coordinates. For example
  * you can request a symmetric 25x25 matrix, an asymmetric 1x24 matrix with distinct coordinates or a 12x24 where
  * sources and destinations share some coordinates. For higher volumes contact us.
+ * <p>
+ * This replace the distance.v1 API
  *
  * @see <a href="https://www.mapbox.com/api-documentation/#directions-matrix">API documentation</a>
  * @since 2.1.0
