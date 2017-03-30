@@ -2,7 +2,6 @@ package com.mapbox.services.api.rx.directionsmatrix.v1;
 
 import com.mapbox.services.api.ServicesException;
 import com.mapbox.services.api.directions.v5.DirectionsCriteria;
-import com.mapbox.services.api.directionsmatrix.v1.MapboxDirectionsMatrix;
 import com.mapbox.services.api.directionsmatrix.v1.models.DirectionsMatrixResponse;
 import com.mapbox.services.commons.models.Position;
 
@@ -29,7 +28,8 @@ import static org.junit.Assert.assertEquals;
 
 public class MapboxDirectionsMatrixRxTest {
 
-  public static final String DIRECTIONS_MATRIX_3X3_FIXTURE = "libjava-services/src/test/fixtures/directions_matrix_3x3.json";
+  public static final String DIRECTIONS_MATRIX_3X3_FIXTURE
+    = "libjava-services/src/test/fixtures/directions_matrix_3x3.json";
 
   private MockWebServer server;
   private HttpUrl mockUrl;
@@ -44,7 +44,9 @@ public class MapboxDirectionsMatrixRxTest {
       @Override
       public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
         try {
-          String body = new String(Files.readAllBytes(Paths.get(DIRECTIONS_MATRIX_3X3_FIXTURE)), Charset.forName("utf-8"));
+          String body = new String(
+            Files.readAllBytes(Paths.get(DIRECTIONS_MATRIX_3X3_FIXTURE)), Charset.forName("utf-8")
+          );
           return new MockResponse().setBody(body);
         } catch (IOException ioException) {
           throw new RuntimeException(ioException);
@@ -59,8 +61,8 @@ public class MapboxDirectionsMatrixRxTest {
 
     positions = new ArrayList<>();
     positions.add(Position.fromCoordinates(-122.42, 37.78));
-    positions.add(Position.fromCoordinates(-122.45,37.91));
-    positions.add(Position.fromCoordinates(-122.48,37.73));
+    positions.add(Position.fromCoordinates(-122.45, 37.91));
+    positions.add(Position.fromCoordinates(-122.48, 37.73));
   }
 
   @After
